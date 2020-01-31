@@ -9,8 +9,18 @@ namespace Fasetto.Word
     /// <summary>
     /// A base page for all pages to gain base functionality
     /// </summary>
-    public class BasePage : Page
+    public class BasePage<VM> : Page
+        where VM: BaseViewModel, new()
     {
+        #region Private Members
+
+        /// <summary>
+        /// The view model associated with this page
+        /// </summary>
+        private VM mViewModel;
+
+        #endregion
+
         #region Public Properies
 
         /// <summary>
@@ -28,6 +38,26 @@ namespace Fasetto.Word
         /// </summary>
         public float SlideSeconds { get; set; } = 0.8f;
 
+        /// <summary>
+        /// The view model associated with this page
+        /// </summary>
+        public VM ViewModel
+        {
+            get { return mViewModel; }
+            set
+            {
+                // If notjing has changed, return
+                if (mViewModel == value)
+                    return;
+
+                // Update the value
+                mViewModel = value;
+
+                // Set the data context for this page
+                this.DataContext = mViewModel;
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -44,6 +74,9 @@ namespace Fasetto.Word
 
             // Listen out for the page loading
             this.Loaded += BasePage_Loaded;
+
+            // Create a default view model
+            this.ViewModel = new VM();
         }
 
         #endregion
@@ -71,7 +104,7 @@ namespace Fasetto.Word
                 case PageAnimation.SlideAndFadeInFromRight:
 
                     // Start the animation
-                    await this.SlideAndFadeInFromRight(this.SlideSeconds * 20);
+                    await this.SlideAndFadeInFromRight(this.SlideSeconds);
 
                     break;
             }

@@ -168,7 +168,7 @@ namespace Fasetto.Word
 
         #endregion
 
-        #region private helpers
+        #region Private Helpers
 
         
         private Point GetMousePosition()
