@@ -32,12 +32,12 @@ namespace Fasetto.Word
         /// <summary>
         /// The smallest witdth the window can go
         /// </summary>
-        public double WindowMinimumWidth { get; set; } = 400;
+        public double WindowMinimumWidth { get; set; } = 800;
 
         /// <summary>
         /// The smallest height the window can go
         /// </summary>
-        public double WindowMinimumHeight { get; set; } = 400;
+        public double WindowMinimumHeight { get; set; } = 500;
 
         /// <summary>
         /// The size of resize border around thi window
@@ -107,7 +107,7 @@ namespace Fasetto.Word
         /// <summary>
         /// The current page of the application
         /// </summary>
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Login;
+        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Chat;
 
         #endregion
 

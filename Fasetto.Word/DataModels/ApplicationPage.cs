@@ -15,5 +15,10 @@ namespace Fasetto.Word
         /// The initial login page
         /// </summary>
         Login = 0,
+
+        /// <summary>
+        /// Main chat page
+        /// </summary>
+        Chat = 1,
     }
 }
