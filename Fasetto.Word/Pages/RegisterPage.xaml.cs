@@ -18,14 +18,20 @@ using System.Windows.Shapes;
 namespace Fasetto.Word
 {
     /// <summary>
-    /// Логика взаимодействия для ChatPage.xaml
+    /// Логика взаимодействия для LoginPage.xaml
     /// </summary>
-    public partial class ChatPage : BasePage<LoginViewModel>
+    public partial class RegisterPage : BasePage<LoginViewModel>, IHavePassword
     {
-        public ChatPage()
+        public RegisterPage()
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// The secure password for this login page
+        /// </summary>
+        public SecureString SecurePassword => PasswordText.SecurePassword;
+
 
 
     }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Fasetto.Word.Core;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Fasetto.Word
@@ -16,6 +17,11 @@ namespace Fasetto.Word
         private Window mWindow;
 
         /// <summary>
+        /// The window resizer helper that keeps the window size correct in varios states
+        /// </summary>
+        private WindowResizer mWindowResizer;
+
+        /// <summary>
         /// The margin around the window to allow for a drop shadow
         /// </summary>
         private int mOutterMarginSize = 10;
@@ -24,6 +30,11 @@ namespace Fasetto.Word
         /// The radius of the edges of the window
         /// </summary>
         private int mWindowRadius = 10;
+
+        /// <summary>
+        /// The last known dock position
+        /// </summary>
+        private WindowDockPosition mDockPosition = WindowDockPosition.Undocked;
 
         #endregion
 
@@ -40,14 +51,19 @@ namespace Fasetto.Word
         public double WindowMinimumHeight { get; set; } = 500;
 
         /// <summary>
+        /// True if the window should be borderless because it is docked or maximized
+        /// </summary>
+        public bool Borderless => (mWindow.WindowState == WindowState.Maximized || mDockPosition != WindowDockPosition.Undocked);
+
+        /// <summary>
         /// The size of resize border around thi window
         /// </summary>
-        public int ResizeBorder { get; set; } = 6;
+        public int ResizeBorder => Borderless ? 0 : 6;
 
         /// <summary>
         /// The size of resize border around thi window, taking in the account the outter margin
         /// </summary>
-        public Thickness ResizeBorderThickness { get { return new Thickness(ResizeBorder + OutterMarginSize); } }
+        public Thickness ResizeBorderThickness => new Thickness(ResizeBorder + OutterMarginSize);
 
         /// <summary>
         /// The padding of inner content of the main window
@@ -59,40 +75,30 @@ namespace Fasetto.Word
         /// </summary>
         public int OutterMarginSize
         {
-            get
-            {
-                return mWindow.WindowState == WindowState.Maximized ? 0 : mOutterMarginSize;
-            }
-            set
-            {
-                mOutterMarginSize = value;
-            }
+            // If it is maximized or docked, no border
+            get => Borderless ? 0 : mOutterMarginSize;
+            set => mOutterMarginSize = value;
         }
 
         /// <summary>
         /// The margin around the window to allow for a drop shadow
         /// </summary>
-        public Thickness OutterMarginSizeThickness { get { return new Thickness(OutterMarginSize); } }
+        public Thickness OutterMarginSizeThickness => new Thickness(OutterMarginSize);
 
         /// <summary>
         /// The radius of the edges of the window
         /// </summary>
         public int WindowRadius
         {
-            get
-            {
-                return mWindow.WindowState == WindowState.Maximized ? 0 : mWindowRadius;
-            }
-            set
-            {
-                mWindowRadius = value;
-            }
+            // If it is maximized or docked, no border
+            get => Borderless ? 0 : mWindowRadius;
+            set => mWindowRadius = value;
         }
 
         /// <summary>
         /// The radius of the edges of the window
         /// </summary>
-        public CornerRadius WindowCornerRadius { get { return new CornerRadius(WindowRadius); } }
+        public CornerRadius WindowCornerRadius => new CornerRadius(WindowRadius);
 
         /// <summary>
         /// The height of the title bar / caption of the window
@@ -102,12 +108,9 @@ namespace Fasetto.Word
         /// <summary>
         /// The height of the title bar / caption of the window
         /// </summary>
-        public GridLength TitleHeightGridLength { get { return new GridLength(TitleHeight + ResizeBorder); } }
+        public GridLength TitleHeightGridLength => new GridLength(TitleHeight + ResizeBorder);
 
-        /// <summary>
-        /// The current page of the application
-        /// </summary>
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Chat;
+        
 
         #endregion
 
@@ -149,11 +152,7 @@ namespace Fasetto.Word
             mWindow.StateChanged += (sender, e) =>
             {
                 // Fire off the events for all properties that are affected by a resize
-                OnPropertyChanged(nameof(ResizeBorderThickness));
-                OnPropertyChanged(nameof(OutterMarginSize));
-                OnPropertyChanged(nameof(OutterMarginSizeThickness));
-                OnPropertyChanged(nameof(WindowRadius));
-                OnPropertyChanged(nameof(WindowCornerRadius));
+                WindowResized();
             };
 
             // Create commands
@@ -163,7 +162,18 @@ namespace Fasetto.Word
             MenuCommand = new RelayCommand(() => SystemCommands.ShowSystemMenu(mWindow, GetMousePosition()));
 
             // Fix window resize issue (without it some content on the edge disapears in maximized state)
-            var resizer = new WindowResizer(mWindow);
+            mWindowResizer = new WindowResizer(mWindow);
+
+            //Listen out for dock changes
+            mWindowResizer.WindowDockChanged += (dock) =>
+            {
+                // Store last position
+                mDockPosition = dock;
+
+                // Fire off resize events
+                WindowResized();
+            };
+            
         }
 
         #endregion
@@ -178,6 +188,17 @@ namespace Fasetto.Word
 
             // Add the window position so its a "ToScreen"
             return new Point(position.X + mWindow.Left, position.Y + mWindow.Top);
+        }
+
+        private void WindowResized()
+        {
+            // Fire off the events for all properties that are affected by a resize
+            OnPropertyChanged(nameof(Borderless));
+            OnPropertyChanged(nameof(ResizeBorderThickness));
+            OnPropertyChanged(nameof(OutterMarginSize));
+            OnPropertyChanged(nameof(OutterMarginSizeThickness));
+            OnPropertyChanged(nameof(WindowRadius));
+            OnPropertyChanged(nameof(WindowCornerRadius));
         }
 
         #endregion

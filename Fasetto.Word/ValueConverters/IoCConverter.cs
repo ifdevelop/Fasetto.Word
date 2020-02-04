@@ -1,4 +1,5 @@
 ﻿using Fasetto.Word.Core;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,23 +11,17 @@ using System.Threading.Tasks;
 namespace Fasetto.Word
 {
     /// <summary>
-    /// Converts the <see cref="ApplicationPage"/> to an actual view/page
+    /// Converts a string name to a service pulled from the IoC container
     /// </summary>
-    public class ApplicationPageValueConverter : BaseValueConverter<ApplicationPageValueConverter>
+    public class IoCConverter : BaseValueConverter<IoCConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Find the appropriate page
-            switch((ApplicationPage)value)
+            switch((string)value)
             {
-                case ApplicationPage.Login:
-                    return new LoginPage();
-
-                case ApplicationPage.Register:
-                    return new RegisterPage();
-
-                case ApplicationPage.Chat:
-                    return new ChatPage();
+                case nameof(ApplicationViewModel):
+                    return IoC.Get<ApplicationViewModel>();
 
                 default:
                     Debugger.Break();

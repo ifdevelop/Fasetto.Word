@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fasetto.Word
+namespace Fasetto.Word.Core
 {
     /// <summary>
     /// The page of application
@@ -20,5 +20,10 @@ namespace Fasetto.Word
         /// Main chat page
         /// </summary>
         Chat = 1,
+
+        /// <summary>
+        /// The register page
+        /// </summary>
+        Register = 2,
     }
 }

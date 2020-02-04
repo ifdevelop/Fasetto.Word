@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Fasetto.Word
+namespace Fasetto.Word.Core
 {
     /// <summary>
     /// The View Model for a login screen
@@ -32,6 +32,11 @@ namespace Fasetto.Word
         /// </summary>
         public ICommand LoginCommand { get; set; }
 
+        /// <summary>
+        /// The command to register
+        /// </summary>
+        public ICommand RegisterCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -43,7 +48,8 @@ namespace Fasetto.Word
         public LoginViewModel()
         {
             // Create commands
-            LoginCommand = new RelayParameterizedCommand(async(parameter) => await Login(parameter));
+            LoginCommand = new RelayParameterizedCommand(async(parameter) => await LoginAsync(parameter));
+            RegisterCommand = new RelayCommand(async () => await RegisterAsync());
         }
 
 
@@ -55,13 +61,13 @@ namespace Fasetto.Word
         /// </summary>
         /// <param name="parameter"> The <see cref="SecureString"/> passed in from the view for the users password </param>
         /// <returns></returns>
-        public async Task Login(object parameter)
+        public async Task LoginAsync(object parameter)
         {
-            await RunCommand(() => this.LoginIsRunning, async () =>
+            await RunCommandAsync(() => LoginIsRunning, async () =>
             {
                 await Task.Delay(500);
 
-                var email = this.Email;
+                var email = Email;
 
                 //IMPORTANT: Never store unsecure password in variable like this
                 var pass = (parameter as IHavePassword).SecurePassword.Unsecure();
@@ -70,5 +76,18 @@ namespace Fasetto.Word
             });
             
         }
+
+        /// <summary>
+        /// Takes the user to the register page
+        /// </summary>
+        /// <returns></returns>
+        public async Task RegisterAsync()
+        {
+            // Go to register page?
+            IoC.Get<ApplicationViewModel>().CurrentPage = ApplicationPage.Register;
+
+            await Task.Delay(1);
+        }
+
     }
 }
