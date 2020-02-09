@@ -32,7 +32,9 @@ namespace Fasetto.Word
         /// </summary>
         public SecureString SecurePassword => PasswordText.SecurePassword;
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
-
+        }
     }
 }

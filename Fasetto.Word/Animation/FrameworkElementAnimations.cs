@@ -16,14 +16,15 @@ namespace Fasetto.Word
         /// <param name="element"> The element to animate </param>
         /// <param name="seconds"> The time the animation will take </param>
         /// <param name="keepMargin"> Whether to keep the elemnt at the same widyh during animation </param>
+        /// <param name="width"> The animation width to animate to. If not specified the elements width is used </param>
         /// <returns></returns>
-        public static async Task SlideAndFadeInFromRightAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true)
+        public static async Task SlideAndFadeInFromRightAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true, int width = 0)
         {
             // Create the storyboard
             var sb = new Storyboard();
 
             // Add slide from right animation
-            sb.AddSlideFromRight(seconds, element.ActualWidth, keepMargin: keepMargin);
+            sb.AddSlideFromRight(seconds, width == 0 ? element.ActualWidth : width, keepMargin: keepMargin);
 
             // Add fade in animation
             sb.AddFadeIn(seconds);
@@ -45,13 +46,13 @@ namespace Fasetto.Word
         /// <param name="seconds"> The time the animation will take </param>
         /// <param name="keepMargin"> Whether to keep the elemnt at the same widyh during animation </param>
         /// <returns></returns>
-        public static async Task SlideAndFadeOutToRightAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true)
+        public static async Task SlideAndFadeOutToRightAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true, int width = 0)
         {
             // Create the storyboard
             var sb = new Storyboard();
 
             // Add slide to left animation
-            sb.AddSlideToRight(seconds, element.ActualWidth, keepMargin: keepMargin);
+            sb.AddSlideToRight(seconds, width == 0 ? element.ActualWidth : width, keepMargin: keepMargin);
 
             // Add fade out animation
             sb.AddFadeOut(seconds);
@@ -73,13 +74,13 @@ namespace Fasetto.Word
         /// <param name="seconds"> The time the animation will take </param>
         /// <param name="keepMargin"> Whether to keep the elemnt at the same widyh during animation </param>
         /// <returns></returns>
-        public static async Task SlideAndFadeOutToLeftAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true)
+        public static async Task SlideAndFadeOutToLeftAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true, int width = 0)
         {
             // Create the storyboard
             var sb = new Storyboard();
 
             // Add slide to left animation
-            sb.AddSlideToLeft(seconds, element.ActualWidth, keepMargin: keepMargin);
+            sb.AddSlideToLeft(seconds, width == 0 ? element.ActualWidth : width, keepMargin: keepMargin);
 
             // Add fade out animation
             sb.AddFadeOut(seconds);
@@ -101,13 +102,13 @@ namespace Fasetto.Word
         /// <param name="seconds"> The time the animation will take </param>
         /// <param name="keepMargin"> Whether to keep the elemnt at the same widyh during animation </param>
         /// <returns></returns>
-        public static async Task SlideAndFadeInFromLeftAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true)
+        public static async Task SlideAndFadeInFromLeftAsync(this FrameworkElement element, float seconds = 0.3f, bool keepMargin = true, int width = 0)
         {
             // Create the storyboard
             var sb = new Storyboard();
 
             // Add slide from right animation
-            sb.AddSlideFromLeft(seconds, element.ActualWidth, keepMargin: keepMargin);
+            sb.AddSlideFromLeft(seconds, width == 0 ? element.ActualWidth : width, keepMargin: keepMargin);
 
             // Add fade in animation
             sb.AddFadeIn(seconds);

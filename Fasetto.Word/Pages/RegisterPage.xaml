@@ -8,7 +8,7 @@
       mc:Ignorable="d" 
       x:Name="Page"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Register">
+      >
 
     <Border>
         <Grid>
@@ -46,13 +46,17 @@
                                        Margin="0 0 0 20"/>
 
                             <!-- Email -->
-                            <TextBox Text="{Binding Email}"  Tag="Email"/>
+                            <TextBox Text="{Binding Email}"  
+                                     Tag="Email"
+                                     local:IsFocusedProperty.Value="True"
+                                     />
 
                             <!-- Password -->
                             <PasswordBox x:Name="PasswordText" Tag="Password" Margin="0 0 0 30"/>
 
                             <!-- Next button -->
                             <Button Content="Register" 
+                                    IsDefault="True"
                                     local:IsBusyProperty.Value ="{Binding RegisterIsRunning}"
                                     Command="{Binding RegisterCommand}" 
                                     CommandParameter="{Binding ElementName=Page}"  
