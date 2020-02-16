@@ -21,9 +21,14 @@ namespace Fasetto.Word.Core
         public bool AttachmentMenuVisible { get; set; }
 
         /// <summary>
+        /// True if any popup menus are visible
+        /// </summary>
+        public bool AnyPopupVisible => AttachmentMenuVisible;
+
+        /// <summary>
         /// The view model for the attachment menu
         /// </summary>
-        public ChatAttachmentPopupMenuViewModel AttachMenu { get; set; }
+        public ChatAttachmentPopupMenuViewModel AttachmentMenu { get; set; }
 
         #endregion
 
@@ -34,6 +39,11 @@ namespace Fasetto.Word.Core
         /// The command for when the attachment button is ckicked
         /// </summary>
         public ICommand  AttachmentButtonCommand { get; set; }
+
+        /// <summary>
+        /// The command for when the area outside ofany popup is clicked
+        /// </summary>
+        public ICommand PopupClickawayCommand { get; set; }
 
         #endregion
 
@@ -46,9 +56,10 @@ namespace Fasetto.Word.Core
         {
             // Create commands
             AttachmentButtonCommand = new RelayCommand(AttachmentButton);
+            PopupClickawayCommand = new RelayCommand(PopupClickaway);
 
             // Make a default
-            AttachMenu = new ChatAttachmentPopupMenuViewModel();
+            AttachmentMenu = new ChatAttachmentPopupMenuViewModel();
         }
 
         #endregion
@@ -56,12 +67,21 @@ namespace Fasetto.Word.Core
         #region Command Methods
 
         /// <summary>
-        /// When the attachment button is clicked
+        /// When the attachment button is clicked show/hide the attachment popup
         /// </summary>
         public void AttachmentButton()
         {
             // Toggle menu visibility
             AttachmentMenuVisible ^= true;
+        }
+
+        /// <summary>
+        /// When the popup clickaway area is clicked hide any popups
+        /// </summary>
+        public void PopupClickaway()
+        {
+            // Hide attachment menu
+            AttachmentMenuVisible = false;
         }
 
         #endregion

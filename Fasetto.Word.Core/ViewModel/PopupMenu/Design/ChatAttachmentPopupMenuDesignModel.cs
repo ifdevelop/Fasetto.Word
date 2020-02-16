@@ -1,7 +1,7 @@
 ﻿namespace Fasetto.Word.Core
 {
     /// <summary>
-    /// The design-time data for a <see cref="ChatAttachmentPopupMenuDesignModel"/>
+    /// The design-time data for a <see cref="ChatAttachmentPopupMenuViewModel"/>
     /// </summary>
     public class ChatAttachmentPopupMenuDesignModel : ChatAttachmentPopupMenuViewModel
     {
@@ -20,7 +20,7 @@
             /// </summary>
             public ChatAttachmentPopupMenuDesignModel()
             {
-                
+                BubbleBackground = "ffffff";
             }
 
             #endregion

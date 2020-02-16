@@ -5,7 +5,7 @@ namespace Fasetto.Word
     /// <summary>
     /// A view model for any popup menus
     /// </summary>
-    public class BasePopupMenuViewModel : BaseViewModel
+    public class BasePopupViewModel : BaseViewModel
     {
         #region Public Properties
 
@@ -20,6 +20,11 @@ namespace Fasetto.Word
         /// </summary>
         public ElementHorizontalAligment ArrowAligment { get; set; }
 
+        /// <summary>
+        /// The content inside this popup menu
+        /// </summary>
+        public BaseViewModel Content { get; set; }
+
         #endregion
 
         #region Constructor
@@ -27,7 +32,7 @@ namespace Fasetto.Word
         /// <summary>
         /// Default constructor
         /// </summary>
-        public BasePopupMenuViewModel()
+        public BasePopupViewModel()
         {
             // Set default values
             //TODO: Move colors into Core and make use of it here
