@@ -7,7 +7,7 @@ namespace Fasetto.Word
     /// <summary>
     /// The View Model for the custom flat window
     /// </summary>
-    class WindowViewModel : BaseViewModel
+    public class WindowViewModel : BaseViewModel
     {
         #region Private Members
 
@@ -110,7 +110,11 @@ namespace Fasetto.Word
         /// </summary>
         public GridLength TitleHeightGridLength => new GridLength(TitleHeight + ResizeBorder);
 
-        
+        /// <summary>
+        /// True if we shold have a dimmed overlay on the window
+        /// such as when a popup is visible or the window is not focused
+        /// </summary>
+        public bool DimmableOverlayVisible { get; set; }
 
         #endregion
 

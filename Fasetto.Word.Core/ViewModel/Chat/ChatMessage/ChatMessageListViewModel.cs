@@ -9,11 +9,13 @@ namespace Fasetto.Word.Core
     public class ChatMessageListViewModel : BaseViewModel
     {
         #region Public Properties
-
+        
         /// <summary>
         /// The chat thread items for the list
         /// </summary>
         public List<ChatMessageListItemViewModel> Items { get; set; }
+
+        
 
         /// <summary>
         /// True to show the attachment menu, false to hide it
@@ -45,6 +47,11 @@ namespace Fasetto.Word.Core
         /// </summary>
         public ICommand PopupClickawayCommand { get; set; }
 
+        /// <summary>
+        /// The command when the user clicks the send button
+        /// </summary>
+        public ICommand SendCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -57,6 +64,7 @@ namespace Fasetto.Word.Core
             // Create commands
             AttachmentButtonCommand = new RelayCommand(AttachmentButton);
             PopupClickawayCommand = new RelayCommand(PopupClickaway);
+            SendCommand = new RelayCommand(Send);
 
             // Make a default
             AttachmentMenu = new ChatAttachmentPopupMenuViewModel();
@@ -82,6 +90,19 @@ namespace Fasetto.Word.Core
         {
             // Hide attachment menu
             AttachmentMenuVisible = false;
+        }
+
+        /// <summary>
+        /// When the user clicks the send button, sends the message
+        /// </summary>
+        public void Send()
+        {
+            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+            {
+                Title = "Send Message",
+                Message = "Thank you for writing a nice message :)",
+                OkText = "OK"
+            });
         }
 
         #endregion

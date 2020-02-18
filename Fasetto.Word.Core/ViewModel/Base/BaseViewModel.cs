@@ -12,7 +12,6 @@ namespace Fasetto.Word.Core
     [AddINotifyPropertyChangedInterface]
     public class BaseViewModel : INotifyPropertyChanged
     {
-
         /// <summary>
         /// The event that is fired when any child property changes its value
         /// </summary>

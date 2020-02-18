@@ -195,5 +195,62 @@ namespace Fasetto.Word
         }
 
         #endregion
+
+        #region Fade In / Out
+
+        /// <summary>
+        /// Fades an element in
+        /// </summary>
+        /// <param name="element"> The element to animate </param>
+        /// <param name="seconds"> The time the animation will take </param>
+        /// <returns></returns>
+        public static async Task FadeInAsync(this FrameworkElement element, float seconds = 0.3f)
+        {
+            // Create the storyboard
+            var sb = new Storyboard();
+
+            // Add fade in animation
+            sb.AddFadeIn(seconds);
+
+            // Start animating 
+            sb.Begin(element);
+
+            // Make page visible
+            element.Visibility = Visibility.Visible;
+
+            // Wait fo it to finish
+            await Task.Delay((int)(seconds * 1000));
+        }
+
+        /// <summary>
+        /// Fades out an element 
+        /// </summary>
+        /// <param name="element"> The element to animate </param>
+        /// <param name="seconds"> The time the animation will take </param>
+        /// <param name="keepMargin"> Whether to keep the elemnt at the same height during animation </param>
+        /// <param name="height"> The animation height to animate to. If not specified the elements width is used </param>
+        /// <returns></returns>
+        public static async Task FadeOutAsync(this FrameworkElement element, float seconds = 0.3f)
+        {
+            // Create the storyboard
+            var sb = new Storyboard();
+
+            // Add fade out animation
+            sb.AddFadeOut(seconds);
+
+            // Start animating 
+            sb.Begin(element);
+
+            // Make page visible
+            element.Visibility = Visibility.Visible;
+
+            // Wait fo it to finish
+            await Task.Delay((int)(seconds * 1000));
+
+            // Fully hide the element
+            element.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
     }
 }
