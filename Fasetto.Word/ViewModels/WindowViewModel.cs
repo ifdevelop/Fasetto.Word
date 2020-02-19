@@ -116,6 +116,8 @@ namespace Fasetto.Word
         /// </summary>
         public bool DimmableOverlayVisible { get; set; }
 
+        
+
         #endregion
 
         #region Commands

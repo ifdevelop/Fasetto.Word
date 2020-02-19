@@ -17,9 +17,14 @@ namespace Fasetto.Word.Core
         public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.Chat;
 
         /// <summary>
-        /// True if the side menu should be dhown
+        /// True if the side menu should be shown
         /// </summary>
         public bool SideMenuVisible { get; set; } = true;
+
+        /// <summary>
+        /// True if the settings menu should be shown
+        /// </summary>
+        public bool SettingsMenuVisible { get; set; } 
 
         /// <summary>
         /// Navigates to the specified page
