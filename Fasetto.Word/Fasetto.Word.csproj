@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Animation\AnimationSlideInDirection.cs" />
     <Compile Include="Animation\PageAnimation.cs" />
     <Compile Include="Animation\FrameworkElementAnimations.cs" />
     <Compile Include="Animation\PageAnimations.cs" />
@@ -93,6 +94,9 @@
     <Compile Include="Controls\Chat\ChatMessage\ChatMessageListItemControl.xaml.cs">
       <DependentUpon>ChatMessageListItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Input\TextEntryControl.xaml.cs">
+      <DependentUpon>TextEntryControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Menu\VerticalMenu.xaml.cs">
       <DependentUpon>VerticalMenu.xaml</DependentUpon>
     </Compile>
@@ -113,6 +117,7 @@
     <Compile Include="Pages\RegisterPage.xaml.cs">
       <DependentUpon>RegisterPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters\BooleanInvertConverter.cs" />
     <Compile Include="ValueConverters\IconTypeToFontAwesomeConverter.cs" />
     <Compile Include="ValueConverters\MenuItemTypeVisibilityConverter.cs" />
     <Compile Include="ValueConverters\PopupContentConverter.cs" />
@@ -157,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Chat\ChatMessage\ChatMessageListItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Input\TextEntryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
