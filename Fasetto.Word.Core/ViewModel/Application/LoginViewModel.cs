@@ -65,7 +65,17 @@ namespace Fasetto.Word.Core
         {
             await RunCommandAsync(() => LoginIsRunning, async () =>
             {
+                // TODO: Fake a login...
                 await Task.Delay(1000);
+
+                // Ok successfully logged in... now get users data
+                // TODO: Ask servernfor users info
+
+                // TODO: Remove this with real information pulled from our database in future
+                IoC.Settings.Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov {DateTime.Now.ToLocalTime()}" };
+                IoC.Settings.Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
+                IoC.Settings.Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
+                IoC.Settings.Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
 
                 // Go to chat page
                 IoC.Application.GoToPage(ApplicationPage.Chat);

@@ -24,7 +24,7 @@ namespace Fasetto.Word.Core
         {
             Name = new TextEntryViewModel { Label = "Name", OriginalText = "Igor Feoktistov" };
             Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
-            Password = new TextEntryViewModel { Label = "Password", OriginalText = "********" };
+            Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
             Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
         }
 
