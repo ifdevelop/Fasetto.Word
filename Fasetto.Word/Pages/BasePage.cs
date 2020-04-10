@@ -13,6 +13,15 @@ namespace Fasetto.Word
     /// </summary>
     public class BasePage : UserControl//Page
     {
+        #region Private Members
+
+        /// <summary>
+        /// The view model associated with this page
+        /// </summary>
+        private object mViewModel;
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -35,6 +44,26 @@ namespace Fasetto.Word
         /// Useful for when we are moving the page to another frame
         /// </summary>
         public bool ShouldAnimateOut { get; set; }
+
+        /// <summary>
+        /// The view model associated with this page
+        /// </summary>
+        public object ViewModelObject
+        {
+            get => mViewModel;
+            set
+            {
+                // If notjing has changed, return
+                if (mViewModel == value)
+                    return;
+
+                // Update the value
+                mViewModel = value;
+
+                // Set the data context for this page
+                DataContext = mViewModel;
+            }
+        }
 
         #endregion
 
@@ -77,6 +106,10 @@ namespace Fasetto.Word
                 await AnimateInAsync();
         }
 
+        /// <summary>
+        /// Animates the page in
+        /// </summary>
+        /// <returns></returns>
         public async Task AnimateInAsync()
         {
             // Make sure we have something to do
@@ -94,6 +127,10 @@ namespace Fasetto.Word
             }
         }
 
+        /// <summary>
+        /// Animates the page out
+        /// </summary>
+        /// <returns></returns>
         public async Task AnimateOutAsync()
         {
             // Make sure we have something to do
@@ -136,24 +173,13 @@ namespace Fasetto.Word
         /// </summary>
         public VM ViewModel
         {
-            get => mViewModel;
-            set
-            {
-                // If notjing has changed, return
-                if (mViewModel == value)
-                    return;
-
-                // Update the value
-                mViewModel = value;
-
-                // Set the data context for this page
-                DataContext = mViewModel;
-            }
+            get => (VM)ViewModelObject;
+            set => ViewModelObject = value;
         }
 
         #endregion
 
-        #region Constructor
+        #region Constructors
 
         /// <summary>
         /// Default constructor
@@ -161,7 +187,21 @@ namespace Fasetto.Word
         public BasePage() : base()
         {
             // Create a default view model
-            ViewModel = new VM();
+            ViewModel = IoC.Get<VM>();
+        }
+
+        /// <summary>
+        /// Constructor with specific view model
+        /// </summary>
+        /// <param name="specificViewModel"> The specific view model to use, if any </param>
+        public BasePage(VM specificViewModel = null) : base()
+        {
+            // Set specific view model
+            if (specificViewModel != null)
+                ViewModel = specificViewModel;
+            else
+                // Create a default view model
+                ViewModel = IoC.Get<VM>();
         }
 
         #endregion
