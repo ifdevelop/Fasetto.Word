@@ -58,7 +58,7 @@ namespace Fasetto.Word
         /// <summary>
         /// The size of resize border around thi window
         /// </summary>
-        public int ResizeBorder => Borderless ? 0 : 6;
+        public int ResizeBorder => Borderless ? 0 : 4;
 
         /// <summary>
         /// The size of resize border around thi window, taking in the account the outter margin
