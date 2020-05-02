@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Fasetto.Word.Web.Server
@@ -23,5 +24,10 @@ namespace Fasetto.Word.Web.Server
         /// The service provider for this application
         /// </summary>
         public static IServiceProvider Provider { get; set; }
+
+        /// <summary>
+        /// The configuration manager for the application
+        /// </summary>
+        public static IConfiguration Configuration { get; set; }
     }
 }
