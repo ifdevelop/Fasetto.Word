@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fasetto.Word", "Fasetto.Wor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fasetto.Word.Core", "Fasetto.Word.Core\Fasetto.Word.Core.csproj", "{6696E9C0-25C1-43B1-BCB4-6A64F1CC0068}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fasetto.Word.Web.Server", "Fasetto.Word.Web.Server\Fasetto.Word.Web.Server.csproj", "{BD3FBF9E-E608-4C0D-9BA3-3F2372B9C2F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6696E9C0-25C1-43B1-BCB4-6A64F1CC0068}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6696E9C0-25C1-43B1-BCB4-6A64F1CC0068}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6696E9C0-25C1-43B1-BCB4-6A64F1CC0068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD3FBF9E-E608-4C0D-9BA3-3F2372B9C2F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD3FBF9E-E608-4C0D-9BA3-3F2372B9C2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD3FBF9E-E608-4C0D-9BA3-3F2372B9C2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD3FBF9E-E608-4C0D-9BA3-3F2372B9C2F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

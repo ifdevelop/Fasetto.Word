@@ -57,9 +57,13 @@
     <Compile Include="DataModels\ElementHorizontalAligment.cs" />
     <Compile Include="DataModels\IconType.cs" />
     <Compile Include="DataModels\MenuItemType.cs" />
+    <Compile Include="Email\SendEmailDetails.cs" />
+    <Compile Include="Email\SendEmailResponse.cs" />
     <Compile Include="Expressions\ExpressionHelpers.cs" />
     <Compile Include="Icons\IconTypeExtensions.cs" />
     <Compile Include="IoC\Base\IoC.cs" />
+    <Compile Include="IoC\Interfaces\IEmailSender.cs" />
+    <Compile Include="IoC\Interfaces\IEmailTemplateSender.cs" />
     <Compile Include="IoC\Interfaces\IUIManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\SecureStringHelpers.cs" />

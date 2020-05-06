@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Fasetto.Word.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Fasetto.Word.Web.Server.Controllers
 {
@@ -57,6 +59,8 @@ namespace Fasetto.Word.Web.Server.Controllers
                 signingCredentials: credentials
                 );
 
+            
+
             // Return token to user
             return Ok(new
             {
@@ -70,6 +74,30 @@ namespace Fasetto.Word.Web.Server.Controllers
         {
             var user = HttpContext.User;
             return Ok(new { privateData = $"some secret for {user.Identity.Name}" }); ;
+        }
+
+        /// <summary>
+        /// Tries to register for a new account on the server
+        /// </summary>
+        /// <param name="registerCredentials">The registration details</param>
+        /// <returns>Returns the result of the register request</returns>
+        [Route("api/register")]
+        public async Task<SendEmailResponse> RegisterAsync() //не нужно
+        {
+            //не нужно
+            await Task.Delay(0);
+            /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! -------------asp lesson 6 1:27:20------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            // Email the user the verification code
+            FasettoEmailSender.SendUserVerificationEmailAsync();
+
+
+
+            // не нужно
+            return new SendEmailResponse
+            {
+                Errors = new List<string>(new[] { "Unknown error occurred" })
+            };
         }
     }
 }

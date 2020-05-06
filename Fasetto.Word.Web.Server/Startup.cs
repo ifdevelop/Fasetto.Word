@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fasetto.Word.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,12 @@ namespace Fasetto.Word.Web.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add SendGrid email sender
+            services.AddSendGridEmailSender();
+
+            // Add general email template sender
+            services.AddEmailTemplateSender();
+
             // Add ApplicationDbContext to DI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(IoCContainer.Configuration.GetConnectionString("DefaultConnection")));
@@ -120,6 +127,8 @@ namespace Fasetto.Word.Web.Server
                     name: "aboutPage",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            
         }
     }
 }
