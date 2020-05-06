@@ -89,7 +89,7 @@ namespace Fasetto.Word.Web.Server.Controllers
             /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! -------------asp lesson 6 1:27:20------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             // Email the user the verification code
-            FasettoEmailSender.SendUserVerificationEmailAsync();
+            //FasettoEmailSender.SendUserVerificationEmailAsync();
 
 
 
