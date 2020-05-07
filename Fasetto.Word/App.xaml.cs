@@ -27,13 +27,8 @@ namespace Fasetto.Word
             ApplicationSetup();
 
             // Log it
-            IoC.Logger.Log("This is Debug", LogLevel.Debug);
-            IoC.Logger.Log("This is Verbose", LogLevel.Verbose);
-            IoC.Logger.Log("This is Informative", LogLevel.Informative);
-            IoC.Logger.Log("This is Warning", LogLevel.Warning);
-            IoC.Logger.Log("This is Error", LogLevel.Error);
-            IoC.Logger.Log("This is Success", LogLevel.Success);
-
+            IoC.Logger.Log("Application starting...", LogLevel.Debug);
+         
             // Show the main window
             Current.MainWindow = new MainWindow();
             Current.MainWindow.Show();
@@ -47,11 +42,23 @@ namespace Fasetto.Word
             // Setup IoC
             IoC.Setup();
 
+            // Bind a Logger
+            IoC.Kernel.Bind<ILogFactory>().ToConstant(new BaseLogFactory(new[]
+            {
+                // TODO: Add ApplicationSettings so we can set/edit a log location
+                //       For now just log to the path where this application is running
+                new FileLogger("log.txt")
+            }));
+
+            IoC.Kernel.Bind<ITaskManager>().ToConstant(new TaskManager());
+
+            // Bind a file manager
+            IoC.Kernel.Bind<IFileManager>().ToConstant(new FileManager());
+
             // Bind a UI Manager
             IoC.Kernel.Bind<IUIManager>().ToConstant(new UIManager());
 
-            // Bind a Logger
-            IoC.Kernel.Bind<ILogFactory>().ToConstant(new BaseLogFactory());
+            
         }
     }
 }
