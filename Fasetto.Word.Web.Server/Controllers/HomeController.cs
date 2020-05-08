@@ -33,18 +33,22 @@ namespace Fasetto.Word.Web.Server
 
         #endregion
 
+        #region Constructor
+
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="userManager"></param>
-        /// <param name="signInManager"></param>
+        /// <param name="context"> The injected context </param>
+        /// <param name="userManager"> The Identity sign in manager </param>
+        /// <param name="signInManager"> The Identity user manager </param>
         public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             mContext = context;
             mUserManager = userManager;
             mSignInManager = signInManager;
-        }
+        } 
+
+        #endregion
 
         public IActionResult Index()
         {
@@ -81,7 +85,9 @@ namespace Fasetto.Word.Web.Server
             var result = await mUserManager.CreateAsync(new ApplicationUser
             {
                 UserName = "ifdev",
-                Email = "if.dev402@gmail.com"
+                Email = "if.dev402@gmail.com",
+                FirstName = "Igor",
+                LastName = "Feoktistov"
             }, "password");
 
             if(result.Succeeded)
