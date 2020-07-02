@@ -76,6 +76,9 @@ namespace Fasetto.Word.Web.Server
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+
+                // Make sure users have inique emails
+                options.User.RequireUniqueEmail = true;
             });
 
             // Alter application cookie info

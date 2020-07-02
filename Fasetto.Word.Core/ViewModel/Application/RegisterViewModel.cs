@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dna;
+using System;
 using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,11 @@ namespace Fasetto.Word.Core
     public class RegisterViewModel : BaseViewModel
     {
         #region Public Properties
+
+        /// <summary>
+        /// The username of the user
+        /// </summary>
+        public string Username { get; set; }
 
         /// <summary>
         /// The email of the user
@@ -65,8 +71,28 @@ namespace Fasetto.Word.Core
         {
             await RunCommandAsync(() => RegisterIsRunning, async () =>
             {
-                await Task.Delay(500);
+                // Call the server and attempt to register with the provided credentials
+                // TODO: Move all URLs and API routes to static class in core
+                var result = await WebRequests.PostAsync<ApiResponse<RegisterResultApiModel>>(
+                    "https://localhost:5001/api/register",
+                    new RegisterCredentialsApiModel
+                    {
+                        Username = Username,
+                        Email = Email,
+                        Password = (parameter as IHavePassword).SecurePassword.Unsecure()
+                    });
 
+                // If the response has an error...
+                if (await result.DisplayErrorIfFailedAsync("Register Failed"))
+                    // We are done
+                    return;
+
+                // Ok successfully registered (and logged in)... now get users data
+                var loginResult = result.ServerResponse.Response;
+
+                // Let the application view model handle what happens
+                // with the successful login
+                await IoC.Application.HandleSuccessfulLoginAsync(loginResult);
             });
             
         }
