@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using Dna;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace Fasetto.Word.Core
         /// The kernel foe IoC container
         /// </summary>
         public static IKernel Kernel { get; private set; } = new StandardKernel();
+
+        public static IClientDataStore ClientDataStore2 => IoC.Get<IClientDataStore>();
 
         /// <summary>
         /// A shortcut to access the <see cref="IUIManager"/>
@@ -48,6 +51,11 @@ namespace Fasetto.Word.Core
         /// A shortcut to access the <see cref="SettingsViewModel"/>
         /// </summary>
         public static SettingsViewModel Settings => IoC.Get<SettingsViewModel>();
+
+        /// <summary>
+        /// A shortcut to access the <see cref="IClientDataStore"/> service
+        /// </summary>
+        public static IClientDataStore ClientDataStore => Framework.Service<IClientDataStore>();
 
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Fasetto.Word.Core
 {
@@ -59,6 +60,11 @@ namespace Fasetto.Word.Core
         /// </summary>
         public ICommand ClearUserDataCommand { get; set; }
 
+        /// <summary>
+        /// Loads the settings data from the client data store
+        /// </summary>
+        public ICommand LoadCommand { get; set; }
+
         #endregion
 
 
@@ -74,11 +80,12 @@ namespace Fasetto.Word.Core
             CloseCommand = new RelayCommand(Close);
             LogoutCommand = new RelayCommand(Logout);
             ClearUserDataCommand = new RelayCommand(ClearUserData);
+            LoadCommand = new RelayCommand(async () => await LoadAsync());
 
-            Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
-            Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
-            Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
-            Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
+            //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
+            //Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
+            //Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
+            //Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
 
             // TODO: Get from localization
             LogoutButtonText = "Logout";
@@ -129,6 +136,25 @@ namespace Fasetto.Word.Core
             Username = null;
             Password = null;
             Email = null;
+        }
+
+        /// <summary>
+        /// Sets the settings view model properties based on the data in the client data store
+        /// </summary>
+        public async Task LoadAsync()
+        {
+            //  Get the stored credentials
+            var storedCredentials = await IoC.ClientDataStore.GetLoginCredentialsAsync();
+
+            Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
+            Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
+            Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
+            Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
+
+            //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"{storedCredentials?.FirstName} {storedCredentials.LastName}" };
+            //Username = new TextEntryViewModel { Label = "Username", OriginalText = storedCredentials.Username };
+            //Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
+            //Email = new TextEntryViewModel { Label = "Email", OriginalText = storedCredentials.Email };
         }
 
         #endregion

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dna.Framework" Version="1.0.7.19" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fasetto.Word.Core\Fasetto.Word.Core.csproj" />
+  </ItemGroup>
+
+</Project>
