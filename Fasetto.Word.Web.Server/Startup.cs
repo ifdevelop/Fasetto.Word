@@ -98,7 +98,7 @@ namespace Fasetto.Word.Web.Server
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             // Store instance of the DI service provider so our application can access it anywhere
-            IoCContainer.Provider = serviceProvider;
+            IoCContainer.Provider = (IServiceProvider)serviceProvider.CreateScope();
 
             // Setup Identity
             app.UseAuthentication();

@@ -6,7 +6,7 @@ using System;
 namespace Fasetto.Word.Web.Server
 {
     /// <summary>
-    /// A shrthand access class to get DI services with nice clean short code
+    /// A shorthand access class to get DI services with nice clean short code
     /// </summary>
     public static class IoC
     {

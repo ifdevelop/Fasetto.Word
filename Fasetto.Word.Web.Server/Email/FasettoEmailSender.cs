@@ -1,4 +1,6 @@
 ﻿using Fasetto.Word.Core;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 
 namespace Fasetto.Word.Web.Server
@@ -17,6 +19,7 @@ namespace Fasetto.Word.Web.Server
         /// <returns></returns>
         public static async Task<SendEmailResponse> SendUserVerificationEmailAsync(string displayName, string email, string verificationUrl)
         {
+           
             return await IoC.EmailTemplateSender.SendGeneralEmailAsync(new SendEmailDetails
             {
                 IsHTML = true,
