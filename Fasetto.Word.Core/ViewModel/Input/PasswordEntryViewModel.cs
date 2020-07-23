@@ -1,4 +1,6 @@
-﻿using System.Security;
+﻿using System;
+using System.Security;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Fasetto.Word.Core
@@ -55,6 +57,17 @@ namespace Fasetto.Word.Core
         /// Indicates if the current text is in edit mode
         /// </summary>
         public bool Editing { get; set; }
+
+        /// <summary>
+        /// Indicates if the current control is pending an update (in progress)
+        /// </summary>
+        public bool Working { get; set; }
+
+        /// <summary>
+        /// The action to run when saving the text.
+        /// Returns true if the commit was successful, or false otherwise
+        /// </summary>
+        public Func<Task<bool>> CommitAction { get; set; }
 
         #endregion
 
@@ -127,51 +140,74 @@ namespace Fasetto.Word.Core
         /// </summary>
         public void Save()
         {
-            // Make sure current password is correct
-            // TODO: This will come from the real back-end store of this users password
-            //       or via asking the web server to confirm it
-            var storedPassword = "Testing";
+            // Store the result of a commit call
+            var result = default(bool);
 
-            // Confirm current password is a match
-            // NOTE: Typically this isn't done here, it's done on the server
-            if (storedPassword != CurrentPassword.Unsecure())
+            RunCommandAsync(() => Working, async () =>
             {
-                // Let user know
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Wrong password",
-                    Message = "The current password is invalid"
-                });
-            }
+                // While working, come out of edit mode
+                Editing = false;
 
-            // Now check that the new and confirm password match
-            if (NewPassword.Unsecure() != ConfirmPassword.Unsecure())
+                // Try and do the work
+                result = CommitAction == null ? true : await CommitAction();
+
+            }).ContinueWith(t =>
             {
-                // Let user know
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                // If we succeeded...
+                // Nothing to do
+                // If we fail...
+                if (!result)
                 {
-                    Title = "Password mismatch",
-                    Message = "The new and confirm password do not match"
-                });
-            }
+                    // Go back into edit mode
+                    Editing = true;
+                }
+            });
 
-            // Check we actualy have a password
-            if (NewPassword.Unsecure().Length == 0)
-            {
-                // Let user know
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Password too short",
-                    Message = "You must enter a password!"
-                });
-            }
+            //// Make sure current password is correct
+            //// TODO: This will come from the real back-end store of this users password
+            ////       or via asking the web server to confirm it
+            //var storedPassword = "Testing";
 
-            // Set the edited password to the current value
-            CurrentPassword = new SecureString();
-            foreach (var c in NewPassword.Unsecure().ToCharArray())
-                CurrentPassword.AppendChar(c);
+            //// Confirm current password is a match
+            //// NOTE: Typically this isn't done here, it's done on the server
+            //if (storedPassword != CurrentPassword.Unsecure())
+            //{
+            //    // Let user know
+            //    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+            //    {
+            //        Title = "Wrong password",
+            //        Message = "The current password is invalid"
+            //    });
+            //}
 
-            Editing = false;
+            //// Now check that the new and confirm password match
+            //if (NewPassword.Unsecure() != ConfirmPassword.Unsecure())
+            //{
+            //    // Let user know
+            //    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+            //    {
+            //        Title = "Password mismatch",
+            //        Message = "The new and confirm password do not match"
+            //    });
+            //}
+
+            //// Check we actualy have a password
+            //if (NewPassword.Unsecure().Length == 0)
+            //{
+            //    // Let user know
+            //    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+            //    {
+            //        Title = "Password too short",
+            //        Message = "You must enter a password!"
+            //    });
+            //}
+
+            //// Set the edited password to the current value
+            //CurrentPassword = new SecureString();
+            //foreach (var c in NewPassword.Unsecure().ToCharArray())
+            //    CurrentPassword.AppendChar(c);
+
+            //Editing = false;
         }
 
         #endregion

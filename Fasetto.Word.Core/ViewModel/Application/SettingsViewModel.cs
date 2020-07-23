@@ -65,6 +65,20 @@ namespace Fasetto.Word.Core
         /// </summary>
         public ICommand LoadCommand { get; set; }
 
+        /// <summary>
+        /// Saves the current name to the server
+        /// </summary>
+        public ICommand SaveNameCommand { get; set; }
+
+        /// <summary>
+        /// Saves the current username to the server
+        /// </summary>
+        public ICommand SaveUsernameCommand { get; set; }
+        /// <summary>
+        /// Saves the current email to the server
+        /// </summary>
+        public ICommand SaveEmailCommand { get; set; }
+
         #endregion
 
 
@@ -81,6 +95,9 @@ namespace Fasetto.Word.Core
             LogoutCommand = new RelayCommand(Logout);
             ClearUserDataCommand = new RelayCommand(ClearUserData);
             LoadCommand = new RelayCommand(async () => await LoadAsync());
+            SaveNameCommand = new RelayCommand(async () => await SaveNameAsync());
+            SaveUsernameCommand = new RelayCommand(async () => await SaveUsernameAsync());
+            SaveEmailCommand = new RelayCommand(async () => await SaveEmailAsync());
 
             //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
             //Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
@@ -90,6 +107,8 @@ namespace Fasetto.Word.Core
             // TODO: Get from localization
             LogoutButtonText = "Logout";
         }
+
+        #endregion
 
         /// <summary>
         /// Opens the settings menu
@@ -146,17 +165,90 @@ namespace Fasetto.Word.Core
             //  Get the stored credentials
             var storedCredentials = await IoC.ClientDataStore.GetLoginCredentialsAsync();
 
-            Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
-            Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
-            Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
-            Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
-
-            //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"{storedCredentials?.FirstName} {storedCredentials.LastName}" };
-            //Username = new TextEntryViewModel { Label = "Username", OriginalText = storedCredentials.Username };
+            //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
+            //Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
             //Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
-            //Email = new TextEntryViewModel { Label = "Email", OriginalText = storedCredentials.Email };
+            //Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
+
+            Name = new TextEntryViewModel { 
+                Label = "Name", 
+                OriginalText = $"{storedCredentials?.FirstName} {storedCredentials.LastName}",
+                CommitAction = SaveNameAsync
+            };
+
+            Username = new TextEntryViewModel {
+                Label = "Username",
+                OriginalText = storedCredentials.Username,
+                CommitAction = SaveUsernameAsync
+            };
+
+            Password = new PasswordEntryViewModel { 
+                Label = "Password", 
+                FakePassword = "********",
+                CommitAction = SavePasswordAsync
+            };
+
+            Email = new TextEntryViewModel { 
+                Label = "Email", 
+                OriginalText = storedCredentials.Email,
+                CommitAction = SaveEmailAsync
+            };
         }
 
-        #endregion
+        /// <summary>
+        /// Saves the Name to the server
+        /// </summary>
+        /// <param name="self"> The details of the view model </param>
+        /// <returns> Returns true if successful, false otherwise </returns>
+        public async Task<bool> SaveNameAsync()
+        {
+            // TODO: Update with server
+            await Task.Delay(3000);
+
+            // Return success
+            return true;
+        }
+
+        /// <summary>
+        /// Saves the Username to the server
+        /// </summary>
+        /// <param name="self"> The details of the view model </param>
+        /// <returns> Returns true if successful, false otherwise </returns>
+        public async Task<bool> SaveUsernameAsync()
+        {
+            // TODO: Update with server
+            await Task.Delay(3000);
+
+            // Return success
+            return true;
+        }
+
+        /// <summary>
+        /// Saves the Email to the server
+        /// </summary>
+        /// <param name="self"> The details of the view model </param>
+        /// <returns> Returns true if successful, false otherwise </returns>
+        public async Task<bool> SaveEmailAsync()
+        {
+            // TODO: Update with server
+            await Task.Delay(3000);
+
+            // Return success
+            return true;
+        }
+
+        /// <summary>
+        /// Saves the Password to the server
+        /// </summary>
+        /// <param name="self"> The details of the view model </param>
+        /// <returns> Returns true if successful, false otherwise </returns>
+        public async Task<bool> SavePasswordAsync()
+        {
+            // TODO: Update with server
+            await Task.Delay(3000);
+
+            // Return fail
+            return false;
+        }
     }
 }
