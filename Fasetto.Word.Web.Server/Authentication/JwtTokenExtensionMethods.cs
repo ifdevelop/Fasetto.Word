@@ -26,6 +26,9 @@ namespace Fasetto.Word.Web.Server
 
                 // The username using the Identity name so it fills out HttpContext.User.Identity.Name value
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
+
+                // Add user Id so that UserManager.GetUserAsync can find the user based on Id
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
 
