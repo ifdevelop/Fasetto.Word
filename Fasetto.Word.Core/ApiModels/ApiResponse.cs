@@ -1,4 +1,6 @@
-﻿namespace Fasetto.Word.Core
+﻿using Newtonsoft.Json;
+
+namespace Fasetto.Word.Core
 {
     /// <summary>
     /// The response for all Web API cals made
@@ -20,6 +22,7 @@
         /// <summary>
         /// The API response object
         /// </summary>
+        //[JsonIgnore]
         public object Response { get; set; }
 
         #endregion
@@ -47,6 +50,7 @@
         /// <summary>
         /// The API response object as T
         /// </summary>
-        public new T Response { get => (T)base.Response; set => base.Response = value; }
+        ///[JsonProperty("MyTestProperty")]
+        public T ResponseGeneric { get => (T)base.Response; set => base.Response = value; }
     }
 }

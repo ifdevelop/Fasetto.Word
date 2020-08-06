@@ -11,6 +11,18 @@ namespace Fasetto.Word.Core
     /// </summary>
     public class ApplicationViewModel : BaseViewModel
     {
+        #region Private Members
+
+
+        /// <summary>
+        /// True if the settings menu should be shown
+        /// </summary>
+        private bool mSettingsMenuVisible;
+
+        #endregion
+
+        #region Public Properties
+
         /// <summary>
         /// The current page of the application
         /// </summary>
@@ -32,8 +44,27 @@ namespace Fasetto.Word.Core
         /// <summary>
         /// True if the settings menu should be shown
         /// </summary>
-        public bool SettingsMenuVisible { get; set; } 
+        public bool SettingsMenuVisible
+        {
+            get => mSettingsMenuVisible;
+            set
+            {
+                // If property has not changed...
+                if (mSettingsMenuVisible == value)
+                    // Ignore
+                    return;
 
+                // Set the backing field
+                mSettingsMenuVisible = value;
+
+                // If the settings menu is now isible...
+                if (value)
+                    // Reload settings
+                    IoC.Task.RunAndForget(IoC.Settings.LoadAsync);
+            }
+        }
+
+        #endregion
         /// <summary>
         /// Navigates to the specified page
         /// </summary>
@@ -66,14 +97,7 @@ namespace Fasetto.Word.Core
         public async Task HandleSuccessfulLoginAsync(UserProfileDetailsApiModel loginResult)
         {
             // Store this in the client data store
-            await IoC.ClientDataStore.SaveLoginCredentialsAsync(new LoginCredentialsDataModel
-            {
-                Email = loginResult.Email,
-                FirstName = loginResult.FirstName,
-                LastName = loginResult.LastName,
-                Username = loginResult.Username,
-                Token = loginResult.Token
-            });
+            await IoC.ClientDataStore.SaveLoginCredentialsAsync(loginResult.ToLoginCredentialsDataModel());
 
             // Load new settings
             await IoC.Settings.LoadAsync();

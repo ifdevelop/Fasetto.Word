@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Dna;
+using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Fasetto.Word.Core
@@ -8,6 +10,14 @@ namespace Fasetto.Word.Core
     /// </summary>
     public class SettingsViewModel : BaseViewModel
     {
+        #region Private Members
+
+        /// <summary>
+        /// The text to show while loading
+        /// </summary>
+        private string mLoadingText = "...";
+
+        #endregion
 
         #region Public Properties
 
@@ -81,7 +91,6 @@ namespace Fasetto.Word.Core
 
         #endregion
 
-
         #region Constructor
 
         /// <summary>
@@ -89,10 +98,42 @@ namespace Fasetto.Word.Core
         /// </summary>
         public SettingsViewModel()
         {
+            // Create Name
+            Name = new TextEntryViewModel
+            {
+                Label = "Name",
+                OriginalText = mLoadingText,
+                CommitAction = SaveNameAsync
+            };
+
+            // Create Username
+            Username = new TextEntryViewModel
+            {
+                Label = "Username",
+                OriginalText = mLoadingText,
+                CommitAction = SaveUsernameAsync
+            };
+
+            // Create Password
+            Password = new PasswordEntryViewModel
+            {
+                Label = "Password",
+                FakePassword = "********",
+                CommitAction = SavePasswordAsync
+            };
+
+            // Create Email
+            Email = new TextEntryViewModel
+            {
+                Label = "Email",
+                OriginalText = mLoadingText,
+                CommitAction = SaveEmailAsync
+            };
+
             // Create commands
             OpenCommand = new RelayCommand(Open);
             CloseCommand = new RelayCommand(Close);
-            LogoutCommand = new RelayCommand(Logout);
+            LogoutCommand = new RelayCommand(async () => await Logout());
             ClearUserDataCommand = new RelayCommand(ClearUserData);
             LoadCommand = new RelayCommand(async () => await LoadAsync());
             SaveNameCommand = new RelayCommand(async () => await SaveNameAsync());
@@ -109,6 +150,8 @@ namespace Fasetto.Word.Core
         }
 
         #endregion
+
+        #region Commands Methods
 
         /// <summary>
         /// Opens the settings menu
@@ -131,11 +174,12 @@ namespace Fasetto.Word.Core
         /// <summary>
         /// Logs the user out
         /// </summary>
-        public void Logout()
+        public async Task Logout()
         {
             // TODO: Confirm the user wants to logout
 
-            // TODO: Clear any user data/cache
+            // Clear any user data/cache
+            await IoC.ClientDataStore.ClearAllLoginCredentialsAsync();
 
             // Clean all aplication level view models that contain
             // any information about the current user
@@ -151,10 +195,9 @@ namespace Fasetto.Word.Core
         public void ClearUserData()
         {
             // Clear all view models containing the users info
-            Name = null;
-            Username = null;
-            Password = null;
-            Email = null;
+            Name.OriginalText = mLoadingText;
+            Username.OriginalText = mLoadingText;
+            Email.OriginalText = mLoadingText;
         }
 
         /// <summary>
@@ -162,37 +205,41 @@ namespace Fasetto.Word.Core
         /// </summary>
         public async Task LoadAsync()
         {
-            //  Get the stored credentials
-            var storedCredentials = await IoC.ClientDataStore.GetLoginCredentialsAsync();
+            // Update values from local cache
+            await UpdateValuesFromLocalStoreAsync();
 
-            //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
-            //Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
-            //Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
-            //Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
+            // Get the user token
+            var token = (await IoC.ClientDataStore.GetLoginCredentialsAsync()).Token;
 
-            Name = new TextEntryViewModel { 
-                Label = "Name", 
-                OriginalText = $"{storedCredentials?.FirstName} {storedCredentials.LastName}",
-                CommitAction = SaveNameAsync
-            };
+            // If we don't have a token (so we are not logged in)...
+            if (string.IsNullOrEmpty(token))
+                // Then do nothing
+                return;
 
-            Username = new TextEntryViewModel {
-                Label = "Username",
-                OriginalText = storedCredentials.Username,
-                CommitAction = SaveUsernameAsync
-            };
+            // Load user profile details from server
+            // TODO: Move all URLs and API routes to static class in core
+            var result = await WebRequests.PostAsync<ApiResponse<UserProfileDetailsApiModel>>(
+                "https://localhost:5001/api/user/profile",
+                bearerToken: token);
 
-            Password = new PasswordEntryViewModel { 
-                Label = "Password", 
-                FakePassword = "********",
-                CommitAction = SavePasswordAsync
-            };
+            // If it was successful...
+            if(result.Successful)
+            {
+                // TODO: Should we check if the values are different before saving
+                await Task.Delay(2000);
 
-            Email = new TextEntryViewModel { 
-                Label = "Email", 
-                OriginalText = storedCredentials.Email,
-                CommitAction = SaveEmailAsync
-            };
+                // Create data model from the response
+                var dataModel = result.ServerResponse.ResponseGeneric.ToLoginCredentialsDataModel();
+
+                // Re-add our known token
+                dataModel.Token = token;
+
+                // Store this in the client data store
+                await IoC.ClientDataStore.SaveLoginCredentialsAsync(dataModel);
+
+                // Update values from local cache
+                await UpdateValuesFromLocalStoreAsync();
+            }
         }
 
         /// <summary>
@@ -249,6 +296,37 @@ namespace Fasetto.Word.Core
 
             // Return fail
             return false;
+        } 
+
+        #endregion
+
+        #region Private Helper Methods
+
+        /// <summary>
+        /// Loads the settings from the local data store and binds them
+        /// to this view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateValuesFromLocalStoreAsync()
+        {
+            //  Get the stored credentials
+            var storedCredentials = await IoC.ClientDataStore.GetLoginCredentialsAsync();
+
+            //Name = new TextEntryViewModel { Label = "Name", OriginalText = $"Igor Feoktistov" };
+            //Username = new TextEntryViewModel { Label = "Username", OriginalText = "Igor" };
+            //Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
+            //Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
+
+            // Set name
+            Name.OriginalText = $"{storedCredentials?.FirstName ?? ""} {storedCredentials?.LastName ?? ""}";
+
+            // Set username
+            Username.OriginalText = storedCredentials?.Username;
+
+            // Set email
+            Email.OriginalText = storedCredentials?.Email;
         }
+
+        #endregion
     }
 }

@@ -132,7 +132,7 @@ namespace Fasetto.Word.Web.Server.Controllers
                 // return valid response containing all users details
                 return new ApiResponse<RegisterResultApiModel>
                 {
-                    Response = new RegisterResultApiModel
+                    ResponseGeneric = new RegisterResultApiModel
                     {
                         FirstName = userIdentity.FirstName,
                         LastName = userIdentity.LastName,
@@ -216,7 +216,7 @@ namespace Fasetto.Word.Web.Server.Controllers
             return new ApiResponse<UserProfileDetailsApiModel>
             {
                 // Pass back the user details and the token
-                Response = new UserProfileDetailsApiModel
+                ResponseGeneric = new UserProfileDetailsApiModel
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -264,6 +264,7 @@ namespace Fasetto.Word.Web.Server.Controllers
         /// Returns the user profile details based on the authenticated user
         /// </summary>
         /// <returns></returns>
+        [Route("api/user/profile")]
         public async Task<ApiResponse<UserProfileDetailsApiModel>> GetUserProfileAsync()
         {
             // Get user claims
@@ -282,7 +283,7 @@ namespace Fasetto.Word.Web.Server.Controllers
             return new ApiResponse<UserProfileDetailsApiModel>
             {
                 // Pass back the user details and the token
-                Response = new UserProfileDetailsApiModel
+                ResponseGeneric = new UserProfileDetailsApiModel
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -300,6 +301,7 @@ namespace Fasetto.Word.Web.Server.Controllers
         /// Reurns successful respose if the update was successful,
         /// otherwise returns the error reasons for the failure
         /// </returns>
+        [Route("api/user/profile/update")]
         public async Task<ApiResponse> UpdateUserProfileAsync([FromBody]UpdateUserProfileApiModel model)
         {
             // Make a list of empty errors

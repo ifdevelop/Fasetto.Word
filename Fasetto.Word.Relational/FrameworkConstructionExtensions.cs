@@ -24,11 +24,6 @@ namespace Fasetto.Word.Relational
                 //options.UseSqlite("ClientDataStoreConnection"); 
             }, contextLifetime: ServiceLifetime.Transient);
 
-
-            
-
-
-
             // Add client data store for easy access/use of the backing data store
             // Make it scoped so we can inject the scoped DbContext
             construction.Services.AddTransient<IClientDataStore>(

@@ -17,12 +17,12 @@ namespace Fasetto.Word
         /// <summary>
         /// The application view model
         /// </summary>
-        public static ApplicationViewModel ApplicationViewModel => IoC.Application;
+        public ApplicationViewModel ApplicationViewModel => IoC.Application;
 
         /// <summary>
         /// The settings view model
         /// </summary>
-        public static SettingsViewModel SettingsViewModel => IoC.Settings;
+        public SettingsViewModel SettingsViewModel => IoC.Settings;
 
         #endregion 
     }
