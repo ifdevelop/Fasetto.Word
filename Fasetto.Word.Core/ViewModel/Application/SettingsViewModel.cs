@@ -1,5 +1,6 @@
 ﻿using Dna;
 using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -22,9 +23,14 @@ namespace Fasetto.Word.Core
         #region Public Properties
 
         /// <summary>
-        /// The currentusers name
+        /// The currentusers first name
         /// </summary>
-        public TextEntryViewModel Name { get; set; }
+        public TextEntryViewModel FirstName { get; set; }
+
+        /// <summary>
+        /// The currentusers last name
+        /// </summary>
+        public TextEntryViewModel LastName { get; set; }
 
         /// <summary>
         /// The currentusers username
@@ -45,6 +51,35 @@ namespace Fasetto.Word.Core
         /// The text for the logout button
         /// </summary>
         public string LogoutButtonText { get; set; }
+
+        #region Transactional Properties
+
+        /// <summary>
+        /// Indicates if the first name is current being saved
+        /// </summary>
+        public bool FirstNameIsSaving { get; set; }
+
+        /// <summary>
+        /// Indicates if the last name is current being saved
+        /// </summary>
+        public bool LastNameIsSaving { get; set; }
+
+        /// <summary>
+        /// Indicates if the username is current being saved
+        /// </summary>
+        public bool UsernameIsSaving { get; set; }
+
+        /// <summary>
+        /// Indicates if the email is current being saved
+        /// </summary>
+        public bool EmailIsSaving { get; set; }
+
+        /// <summary>
+        /// Indicates if the password is current being changed
+        /// </summary>
+        public bool PasswordIsChanging { get; set; }
+
+        #endregion
 
         #endregion
 
@@ -76,9 +111,14 @@ namespace Fasetto.Word.Core
         public ICommand LoadCommand { get; set; }
 
         /// <summary>
-        /// Saves the current name to the server
+        /// Saves the current first name to the server
         /// </summary>
-        public ICommand SaveNameCommand { get; set; }
+        public ICommand SaveFirstNameCommand { get; set; }
+
+        /// <summary>
+        /// Saves the current last name to the server
+        /// </summary>
+        public ICommand SaveLastNameCommand { get; set; }
 
         /// <summary>
         /// Saves the current username to the server
@@ -98,12 +138,20 @@ namespace Fasetto.Word.Core
         /// </summary>
         public SettingsViewModel()
         {
-            // Create Name
-            Name = new TextEntryViewModel
+            // Create FirstName
+            FirstName = new TextEntryViewModel
             {
-                Label = "Name",
+                Label = "First Name",
                 OriginalText = mLoadingText,
-                CommitAction = SaveNameAsync
+                CommitAction = SaveFirstNameAsync
+            };
+
+            // Create LastName
+            LastName = new TextEntryViewModel
+            {
+                Label = "Last Name",
+                OriginalText = mLoadingText,
+                CommitAction = SaveLastNameAsync
             };
 
             // Create Username
@@ -136,7 +184,8 @@ namespace Fasetto.Word.Core
             LogoutCommand = new RelayCommand(async () => await Logout());
             ClearUserDataCommand = new RelayCommand(ClearUserData);
             LoadCommand = new RelayCommand(async () => await LoadAsync());
-            SaveNameCommand = new RelayCommand(async () => await SaveNameAsync());
+            SaveFirstNameCommand = new RelayCommand(async () => await SaveFirstNameAsync());
+            SaveLastNameCommand = new RelayCommand(async () => await SaveLastNameAsync());
             SaveUsernameCommand = new RelayCommand(async () => await SaveUsernameAsync());
             SaveEmailCommand = new RelayCommand(async () => await SaveEmailAsync());
 
@@ -195,7 +244,8 @@ namespace Fasetto.Word.Core
         public void ClearUserData()
         {
             // Clear all view models containing the users info
-            Name.OriginalText = mLoadingText;
+            FirstName.OriginalText = mLoadingText;
+            LastName.OriginalText = mLoadingText;
             Username.OriginalText = mLoadingText;
             Email.OriginalText = mLoadingText;
         }
@@ -243,17 +293,51 @@ namespace Fasetto.Word.Core
         }
 
         /// <summary>
-        /// Saves the Name to the server
+        /// Saves the FirstName to the server
         /// </summary>
         /// <param name="self"> The details of the view model </param>
         /// <returns> Returns true if successful, false otherwise </returns>
-        public async Task<bool> SaveNameAsync()
+        public async Task<bool> SaveFirstNameAsync()
         {
-            // TODO: Update with server
-            await Task.Delay(3000);
+            // Lock this command to ignore any other requests while processing
+            return await RunCommandAsync(() => FirstNameIsSaving, async () =>
+            {
+                // Update the First Name value on the server...
+                return await UpdateUserCredentialsValueAsync(
+                    // Display name
+                    "First Name",
+                    // Update the first name
+                    (credentials) => credentials.FirstName,
+                    // To new value
+                    FirstName.OriginalText,
+                    // Set api model value
+                    (apiModel, value) => apiModel.FirstName = value
+                    ); 
+            });
+        }
 
-            // Return success
-            return true;
+        /// <summary>
+        /// Saves the LastName to the server
+        /// </summary>
+        /// <param name="self"> The details of the view model </param>
+        /// <returns> Returns true if successful, false otherwise </returns>
+        public async Task<bool> SaveLastNameAsync()
+        {
+            // Lock this command to ignore any other requests while processing
+            return await RunCommandAsync(() => LastNameIsSaving, async () =>
+            {
+                // Update the Last Name value on the server...
+                return await UpdateUserCredentialsValueAsync(
+                    // Display name
+                    "Last Name",
+                    // Update the last name
+                    (credentials) => credentials.LastName,
+                    // To new value
+                    LastName.OriginalText,
+                    // Set api model value
+                    (apiModel, value) => apiModel.LastName = value
+                    );
+            });
         }
 
         /// <summary>
@@ -263,11 +347,21 @@ namespace Fasetto.Word.Core
         /// <returns> Returns true if successful, false otherwise </returns>
         public async Task<bool> SaveUsernameAsync()
         {
-            // TODO: Update with server
-            await Task.Delay(3000);
-
-            // Return success
-            return true;
+            // Lock this command to ignore any other requests while processing
+            return await RunCommandAsync(() => UsernameIsSaving, async () =>
+            {
+                // Update the Username value on the server...
+                return await UpdateUserCredentialsValueAsync(
+                    // Display name
+                    "Username",
+                    // Update the username
+                    (credentials) => credentials.Username,
+                    // To new value
+                    Username.OriginalText,
+                    // Set api model value
+                    (apiModel, value) => apiModel.Username = value
+                    );
+            });
         }
 
         /// <summary>
@@ -277,11 +371,21 @@ namespace Fasetto.Word.Core
         /// <returns> Returns true if successful, false otherwise </returns>
         public async Task<bool> SaveEmailAsync()
         {
-            // TODO: Update with server
-            await Task.Delay(3000);
-
-            // Return success
-            return true;
+            // Lock this command to ignore any other requests while processing
+            return await RunCommandAsync(() => EmailIsSaving, async () =>
+            {
+                // Update the email value on the server...
+                return await UpdateUserCredentialsValueAsync(
+                    // Display name
+                    "Email",
+                    // Update the email
+                    (credentials) => credentials.Email,
+                    // To new value
+                    Email.OriginalText,
+                    // Set api model value
+                    (apiModel, value) => apiModel.Email = value
+                    );
+            });
         }
 
         /// <summary>
@@ -317,14 +421,87 @@ namespace Fasetto.Word.Core
             //Password = new PasswordEntryViewModel { Label = "Password", FakePassword = "********" };
             //Email = new TextEntryViewModel { Label = "Email", OriginalText = "if.dev402@gmail.com" };
 
-            // Set name
-            Name.OriginalText = $"{storedCredentials?.FirstName ?? ""} {storedCredentials?.LastName ?? ""}";
+            // Set first name
+            FirstName.OriginalText = storedCredentials?.FirstName;
+
+            // Set last name
+            LastName.OriginalText = storedCredentials?.LastName;
 
             // Set username
             Username.OriginalText = storedCredentials?.Username;
 
             // Set email
             Email.OriginalText = storedCredentials?.Email;
+        }
+
+        /// <summary>
+        /// Updates a specific value from the client data store for the user profile details
+        /// and attempts to update the server tomatch those details.
+        /// for example, updating the first name of the user.
+        /// </summary>
+        /// <param name="displayName"> The display name for logging and display purposes of the property we are updating </param>
+        /// <param name="propertyToUpdate"> The property from the <see cref="LoginCredentialsDataModel" to be updated /></param>
+        /// <param name="newValue"> The new value to update the property to </param>
+        /// <param name="setApiModel"> setes the correct property in the <see cref="UpdateUserProfileApiModel"/> that this property maps to </param>
+        /// <returns></returns>
+        private async Task<bool> UpdateUserCredentialsValueAsync(string displayName, Expression<Func<LoginCredentialsDataModel, string>> propertyToUpdate, string newValue, Action<UpdateUserProfileApiModel, string> setApiModel)
+        {
+            // Log it
+            IoC.Logger.Log($"Saving {displayName}...", LogLevel.Debug);
+
+            // Get the current known credentials
+            var credentials = await IoC.ClientDataStore.GetLoginCredentialsAsync();
+
+            // Get the property to update from the credentials
+            var toUpdate = propertyToUpdate.GetPropertyValue(credentials);
+
+            // Log it
+            IoC.Logger.Log($"{displayName} currently {toUpdate}, updating to {newValue}", LogLevel.Debug);
+
+            // Check if the value is the same...
+            if (toUpdate == newValue)
+            {
+                // Log it
+                IoC.Logger.Log($"{displayName} is the same, ignoring...", LogLevel.Debug);
+
+                return true;
+            }
+
+            // Set the property
+            propertyToUpdate.SetPropertyValue(newValue, credentials);
+
+            // Create update details
+            var updateApiModel = new UpdateUserProfileApiModel();
+
+            // Ask caller to set appropriate value
+            setApiModel(updateApiModel, newValue);
+
+
+            // Update the server awith the details
+            // TODO: Move all URLs and API routes to static class in core
+            var result = await WebRequests.PostAsync<ApiResponse>(
+                "https://localhost:5001/api/user/profile/update",
+                // Pass the Api model
+                updateApiModel,
+                bearerToken: credentials.Token);
+
+            // If the response has an error...
+            if (await result.DisplayErrorIfFailedAsync($"Update {displayName}"))
+            {
+                // Log it
+                IoC.Logger.Log($"Failed to update {displayName}. {result.ErrorMessage}", LogLevel.Debug);
+
+                return false;
+            }
+
+            // Log it
+            IoC.Logger.Log($"Successfully updated {displayName}. Saving to local database cache...", LogLevel.Debug);
+
+            // Store the new user credentials to the data store
+            await IoC.ClientDataStore.SaveLoginCredentialsAsync(credentials);
+
+            // Return successful
+            return true;
         }
 
         #endregion
