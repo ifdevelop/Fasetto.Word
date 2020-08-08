@@ -20,8 +20,6 @@ namespace Fasetto.Word.Core
         /// </summary>
         public static IKernel Kernel { get; private set; } = new StandardKernel();
 
-        public static IClientDataStore ClientDataStore2 => IoC.Get<IClientDataStore>();
-
         /// <summary>
         /// A shortcut to access the <see cref="IUIManager"/>
         /// </summary>
