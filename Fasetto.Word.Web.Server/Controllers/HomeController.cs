@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Fasetto.Word.Core;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -57,13 +58,6 @@ namespace Fasetto.Word.Web.Server
 
             if (!mContext.Settings.Any())
             {
-                mContext.Settings.Add(new SettingsDataModel
-                {
-                    Id = "1",
-                    Name = "Background",
-                    Value = "Red"
-                });
-
                 var settingsLocally = mContext.Settings.Local.Count();
                 var settingsDatabase = mContext.Settings.Count();
 
@@ -79,7 +73,7 @@ namespace Fasetto.Word.Web.Server
 
 
         // Creates our single user for now
-        [Route("create")]
+        [Route(WebRoutes.CreateUser)]
         public async Task<IActionResult> CreateUserAsync()
         {
             var result = await mUserManager.CreateAsync(new ApplicationUser
@@ -97,17 +91,10 @@ namespace Fasetto.Word.Web.Server
         }
 
         /// <summary>
-        /// Private area. No peeking
+        /// Log the user out
         /// </summary>
         /// <returns></returns>
-        [Authorize]
-        [Route("private")]
-        public IActionResult Private()
-        {
-            return Content($"This is a private area. Welcome {HttpContext.User.Identity.Name}", "text/html");
-        }
-
-        [Route("logout")]
+        [Route(WebRoutes.Logout)]
         public async Task<IActionResult> SignOutAsync()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
@@ -119,7 +106,7 @@ namespace Fasetto.Word.Web.Server
         /// </summary>
         /// <param name="returnUrl"></param>
         /// <returns></returns>
-        [Route("login")]
+        [Route(WebRoutes.Login)]
         public async Task<IActionResult> LoginAsync(string returnUrl)
         {
             // Sign out any previous sessions

@@ -76,7 +76,7 @@ namespace Fasetto.Word.Web.Server.Controllers
         /// <param name="registerCredentials"> The registrations details </param>
         /// <returns> Returns the result of the register request </returns>
         [AllowAnonymous]
-        [Route("api/register")]
+        [Route(ApiRoutes.Register)]
         public async Task<ApiResponse<RegisterResultApiModel>> RegisterAsync([FromBody]RegisterCredentialsApiModel registerCredentials)
         {
             // TODO: Localize all strings
@@ -161,7 +161,7 @@ namespace Fasetto.Word.Web.Server.Controllers
         /// <param name="loginCredentials"> The login details </param>
         /// <returns> Returns the result of the register request </returns>
         [AllowAnonymous]
-        [Route("api/login")]
+        [Route(ApiRoutes.Login)]
         public async Task<ApiResponse<UserProfileDetailsApiModel>> LogInAsync([FromBody]LoginCredentialsApiModel loginCredentials)
         {
             // TODO: Localize all strings
@@ -228,7 +228,7 @@ namespace Fasetto.Word.Web.Server.Controllers
         }
 
         [AllowAnonymous]
-        [Route("api/verify/email/{userId}/{emailToken}")]
+        [Route(ApiRoutes.VerifyEmail)]
         [HttpGet]
         public async Task<ActionResult> VerifyEmailAsync(string userId, string emailToken)
         {
@@ -264,7 +264,7 @@ namespace Fasetto.Word.Web.Server.Controllers
         /// Returns the user profile details based on the authenticated user
         /// </summary>
         /// <returns></returns>
-        [Route("api/user/profile")]
+        [Route(ApiRoutes.GetUserProfile)]
         public async Task<ApiResponse<UserProfileDetailsApiModel>> GetUserProfileAsync()
         {
             // Get user claims
@@ -298,10 +298,10 @@ namespace Fasetto.Word.Web.Server.Controllers
         /// </summary>
         /// <param name="model"> The user profile details to update </param>
         /// <returns>
-        /// Reurns successful respose if the update was successful,
+        /// Returns successful respose if the update was successful,
         /// otherwise returns the error reasons for the failure
         /// </returns>
-        [Route("api/user/profile/update")]
+        [Route(ApiRoutes.UpdateUserProfile)]
         public async Task<ApiResponse> UpdateUserProfileAsync([FromBody]UpdateUserProfileApiModel model)
         {
             // Make a list of empty errors
@@ -358,6 +358,47 @@ namespace Fasetto.Word.Web.Server.Controllers
             if (result.Succeeded && emailChanged)
                 // Email the user the verifiction code
                 await SendUserEmailVerificationAsync(user);
+
+            // If we were successful
+            if (result.Succeeded)
+                // Return succesful response
+                return new ApiResponse();
+            // Otherwise if it failed
+            else
+                // Return the failed response
+                return new ApiResponse
+                {
+                    ErrorMessage = result.Errors.AggregateErrors()
+                };
+        }
+
+        /// <summary>
+        /// Attempts to update the users password
+        /// </summary>
+        /// <param name="model"> The user password details to update </param>
+        /// <returns>
+        /// Returns successful respose if the update was successful,
+        /// otherwise returns the error reasons for the failure
+        /// </returns>
+        [Route(ApiRoutes.UpdateUserPassword)]
+        public async Task<ApiResponse> UpdateUserPasswordAsync([FromBody]UpdateUserPasswordApiModel model)
+        {
+            // Make a list of empty errors
+            var errors = new List<string>();
+
+            // Get the current user
+            var user = await mUserManager.GetUserAsync(HttpContext.User);
+
+            // If we have no user...
+            if (user == null)
+                return new ApiResponse
+                {
+                    // TODO: Localization
+                    ErrorMessage = "User not found"
+                };
+
+            // Attempt to commit changes to data store
+            var result = await mUserManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
 
             // If we were successful
             if (result.Succeeded)
